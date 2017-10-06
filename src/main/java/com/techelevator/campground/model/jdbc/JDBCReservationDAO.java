@@ -27,7 +27,7 @@ public class JDBCReservationDAO implements ReservationDAO {
 		String sqlReservationNumbers = "SELECT * FROM site";
 		SqlRowSet returnReservations = jdbcTemplate.queryForRowSet(sqlReservationNumbers);
 			while(returnReservations.next()) {
-				Reservation res = mapRowToParks(returnReservations);
+				Reservation res = mapRowToReservation(returnReservations);
 				reservationList.add(res);
 			}
 		return reservationList;
@@ -37,7 +37,7 @@ public class JDBCReservationDAO implements ReservationDAO {
 	public List<Reservation> addReservation(Long reservationId, Long siteId, String reservationName, LocalDate resStartDate,
 			LocalDate resEndDate, LocalDate resCreate) {
 		String sqlNewReservation = "INSERT INTO reservation (site_id, name, from_date, to_date, create_date) VALUES (?, ?, ?, ?, ?) RETURNING reservation_id";
-		Long newReservation = jdbcTemplate.queryForObject(sqlNewReservation, Long.class, reservationName, resStartDate, resEndDate, resCreate);
+		Long newReservation = jdbcTemplate.queryForObject(sqlNewReservation, Long.class, siteId, reservationName, resStartDate, resEndDate, LocalDate.now());
 		return getReservationByResId(newReservation);
 	}
 
@@ -56,7 +56,7 @@ public class JDBCReservationDAO implements ReservationDAO {
 		String sqlReservationNumbers = "SELECT * FROM site WHERE site_number = ?";
 		SqlRowSet returnReservations = jdbcTemplate.queryForRowSet(sqlReservationNumbers);
 			while(returnReservations.next()) {
-				Reservation campSite = mapRowToParks(returnReservations);
+				Reservation campSite = mapRowToReservation(returnReservations);
 				reservationList.add(campSite);
 			}
 		return reservationList;
@@ -65,10 +65,10 @@ public class JDBCReservationDAO implements ReservationDAO {
 	@Override
 	public List<Reservation> getReservationByResId(Long reservationId) {
 		List<Reservation> reservationList = new ArrayList<>();
-		String sqlReservationNumbers = "SELECT * FROM site WHERE reservation_id = ?";
-		SqlRowSet returnReservations = jdbcTemplate.queryForRowSet(sqlReservationNumbers);
+		String sqlReservationNumbers = "SELECT s.* FROM site s JOIN reservation res ON res.site_id = s.site_id WHERE reservation_id = ?";
+		SqlRowSet returnReservations = jdbcTemplate.queryForRowSet(sqlReservationNumbers, reservationId);
 			while(returnReservations.next()) {
-				Reservation campSite = mapRowToParks(returnReservations);
+				Reservation campSite = mapRowToReservation(returnReservations);
 				reservationList.add(campSite);
 			}
 		return reservationList;
@@ -77,24 +77,24 @@ public class JDBCReservationDAO implements ReservationDAO {
 	@Override
 	public List<Reservation> getReservationByResName(String reservationName) {
 		List<Reservation> reservationList = new ArrayList<>();
-		String sqlReservationNumbers = "SELECT * FROM site WHERE name = ?";
+		String sqlReservationNumbers = "SELECT s.* FROM site s JOIN reservation res ON res.site_id = s.site_id WHERE s.name = ?";
 		SqlRowSet returnReservations = jdbcTemplate.queryForRowSet(sqlReservationNumbers);
 			while(returnReservations.next()) {
-				Reservation campSite = mapRowToParks(returnReservations);
+				Reservation campSite = mapRowToReservation(returnReservations);
 				reservationList.add(campSite);
 			}
 		return reservationList;
 	}
 	
-	private Reservation mapRowToParks (SqlRowSet results) {
+	private Reservation mapRowToReservation (SqlRowSet results) {
 		Reservation theReservation;
 		theReservation = new Reservation();
-		theReservation.setReservationId(results.getLong("site_id"));
-		theReservation.setSiteId(results.getLong("site_id"));
-		theReservation.setName(results.getString("reservation_name"));
-		theReservation.setResStartDate(results.getDate("from_date").toLocalDate());
-		theReservation.setResEndDate(results.getDate("to_date").toLocalDate());
-		theReservation.setCreateDate(results.getDate("create_date").toLocalDate());
+		theReservation.getReservationId();
+		theReservation.getSiteId();
+		theReservation.getName();
+		theReservation.getResStartDate();
+		theReservation.getResEndDate();
+		theReservation.getCreateDate();
 		return theReservation;
 	}
 

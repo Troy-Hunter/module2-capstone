@@ -83,12 +83,12 @@ public class JDBCCampgroundDAO implements CampgroundDAO {
 	private Campground mapRowToCampground (SqlRowSet results) {
 		Campground theCampground;
 		theCampground = new Campground();
-		theCampground.getCampgroundId();
-		theCampground.getParkId();
+		theCampground.setCampgroundId(results.getLong("campground_id"));
+		theCampground.setParkId(results.getLong("park_id"));
 		theCampground.setName(results.getString("name"));
-		theCampground.getOpeningMonth();
-		theCampground.getClosingMonth();
-		theCampground.getDailyFee();
+		theCampground.setOpeningMonth(results.getString("open_from_mm"));
+		theCampground.setClosingMonth(results.getString("open_to_mm"));
+		theCampground.setDailyFee(results.getBigDecimal("daily_fee"));
 		return theCampground;
 	}
 }

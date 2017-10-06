@@ -1,5 +1,6 @@
 package com.techelevator.campground.model.jdbc;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,7 +26,7 @@ public class JDBCSiteDAO implements SiteDAO {
 		String sqlSiteNumbers = "SELECT * FROM site";
 		SqlRowSet returnSites = jdbcTemplate.queryForRowSet(sqlSiteNumbers);
 			while(returnSites.next()) {
-				Site campSite = mapRowToParks(returnSites);
+				Site campSite = mapRowToSite(returnSites);
 				siteList.add(campSite);
 			}
 		return siteList;
@@ -37,7 +38,7 @@ public class JDBCSiteDAO implements SiteDAO {
 			String sqlSiteNumbers = "SELECT * FROM site WHERE campground_id = ?";
 			SqlRowSet returnSites = jdbcTemplate.queryForRowSet(sqlSiteNumbers, campgroundId);
 				while(returnSites.next()) {
-					Site campSite = mapRowToParks(returnSites);
+					Site campSite = mapRowToSite(returnSites);
 					siteList.add(campSite);
 				}
 			return siteList;
@@ -49,7 +50,7 @@ public class JDBCSiteDAO implements SiteDAO {
 		String sqlSiteNumbers = "SELECT * FROM site WHERE site_id = ?";
 		SqlRowSet returnSites = jdbcTemplate.queryForRowSet(sqlSiteNumbers);
 			while(returnSites.next()) {
-				Site campSite = mapRowToParks(returnSites);
+				Site campSite = mapRowToSite(returnSites);
 				siteList.add(campSite);
 			}
 		return siteList;
@@ -62,7 +63,7 @@ public class JDBCSiteDAO implements SiteDAO {
 		String sqlSiteNumbers = "SELECT * FROM site WHERE site_number = ?";
 		SqlRowSet returnSites = jdbcTemplate.queryForRowSet(sqlSiteNumbers);
 			while(returnSites.next()) {
-				Site campSite = mapRowToParks(returnSites);
+				Site campSite = mapRowToSite(returnSites);
 				siteList.add(campSite);
 			}
 		return siteList;
@@ -74,7 +75,7 @@ public class JDBCSiteDAO implements SiteDAO {
 		String sqlSiteNumbers = "SELECT * FROM site WHERE max_occupancy = ?";
 		SqlRowSet returnSites = jdbcTemplate.queryForRowSet(sqlSiteNumbers);
 			while(returnSites.next()) {
-				Site campSite = mapRowToParks(returnSites);
+				Site campSite = mapRowToSite(returnSites);
 				siteList.add(campSite);
 			}
 		return siteList;
@@ -86,7 +87,7 @@ public class JDBCSiteDAO implements SiteDAO {
 		String sqlSiteNumbers = "SELECT * FROM site WHERE site_accessible = ?";
 		SqlRowSet returnSites = jdbcTemplate.queryForRowSet(sqlSiteNumbers);
 			while(returnSites.next()) {
-				Site campSite = mapRowToParks(returnSites);
+				Site campSite = mapRowToSite(returnSites);
 				siteList.add(campSite);
 			}
 		return siteList;
@@ -98,15 +99,36 @@ public class JDBCSiteDAO implements SiteDAO {
 		String sqlSiteNumbers = "SELECT * FROM site WHERE utilities = ?";
 		SqlRowSet returnSites = jdbcTemplate.queryForRowSet(sqlSiteNumbers);
 			while(returnSites.next()) {
-				Site campSite = mapRowToParks(returnSites);
+				Site campSite = mapRowToSite(returnSites);
 				siteList.add(campSite);
 			}
 		return siteList;
 	}
-	private Site mapRowToParks (SqlRowSet results) {
+	
+	@Override
+	public List<Site> getSiteByAvailability(Long campgroundId, LocalDate fromDate, LocalDate toDate) {
+		List<Site> siteList = new ArrayList<>();
+		String sqlSiteNumbers = "SELECT * from site s WHERE campground_id = ? "
+								+ "AND s.site_id NOT IN (SELECT s.site_id FROM site s "
+								+ "JOIN reservation res ON res.site_id = s.site_id "
+								+ "WHERE s.campground_id = ? AND ("
+								+ "res.from_date BETWEEN ? AND ? OR "
+								+ "res.to_date BETWEEN ? AND ? OR "
+								+ "(? BETWEEN res.from_date AND res.to_date AND "
+								+ "? BETWEEN res.from_date AND res.to_date) "
+								+ ")) LIMIT 5";
+		SqlRowSet returnSites = jdbcTemplate.queryForRowSet(sqlSiteNumbers, campgroundId, campgroundId, fromDate, toDate, fromDate, toDate, fromDate, toDate);
+			while(returnSites.next()) {
+				Site campSite = mapRowToSite(returnSites);
+				siteList.add(campSite);
+			}
+		return siteList;	
+	}
+	
+	private Site mapRowToSite (SqlRowSet results) {
 		Site theSite;
 		theSite = new Site();
-		theSite.setSiteId(results.getLong("park_id"));
+		theSite.setSiteId(results.getLong("site_id"));
 		theSite.setCampgroundId(results.getLong("campground_id"));
 		theSite.setSiteNumber(results.getInt("site_number"));
 		theSite.setMaxOccupancy(results.getInt("max_occupancy"));
@@ -115,4 +137,6 @@ public class JDBCSiteDAO implements SiteDAO {
 		theSite.setUtilities(results.getBoolean("utilities"));
 		return theSite;
 	}
+
+
 }
