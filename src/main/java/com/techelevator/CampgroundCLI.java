@@ -14,6 +14,8 @@ import com.techelevator.campground.models.Campground;
 import com.techelevator.campground.models.CampgroundDAO;
 import com.techelevator.campground.models.Park;
 import com.techelevator.campground.models.ParkDAO;
+import com.techelevator.campground.models.Reservation;
+import com.techelevator.campground.models.ReservationDAO;
 import com.techelevator.campground.models.Site;
 import com.techelevator.campground.models.SiteDAO;
 import com.techelevator.campground.view.Menu;
@@ -40,6 +42,7 @@ public class CampgroundCLI {
 	private ParkDAO parkDao;
 	private CampgroundDAO campDao;
 	private SiteDAO siteDao;
+	private ReservationDAO resDao;
 	private Menu menu;
 
 	public static void main(String[] args) {
@@ -56,6 +59,7 @@ public class CampgroundCLI {
 		parkDao = new JDBCParkDAO(datasource);
 		campDao = new JDBCCampgroundDAO(datasource);
 		siteDao = new JDBCSiteDAO(datasource);
+		resDao = new JDBCReservationDAO(datasource);
 		menu = new Menu(System.in, System.out);
 	}
 	
@@ -93,10 +97,10 @@ public class CampgroundCLI {
 	private void handleSite (Site selectedSite) {
 		while(true) {
 			printHeading("Your Camp Site Number is " + selectedSite);
-			List<Reservation> reservationList = siteDao.getSiteByCampground(selectedSite.getSiteId());
+			List<Reservation> reservationList = resDao.get);
 			Reservation choice = (Reservation)menu.getChoiceFromOptions(reservationList.toArray());
 			
-			handleSite(choice);
+			handleReservation(choice);
 		}
 	}
 		/*

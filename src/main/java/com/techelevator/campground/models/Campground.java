@@ -9,6 +9,7 @@ public class Campground {
 	private String openingMonth;
 	private String closingMonth;
 	private BigDecimal dailyFee;
+	
 	public Long getCampgroundId() {
 		return campgroundId;
 	}

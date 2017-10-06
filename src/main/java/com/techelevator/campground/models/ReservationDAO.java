@@ -7,13 +7,13 @@ public interface ReservationDAO {
 	
 	public List<Reservation> getAllReservations();
 	
-	public Reservation addReservation(Long reservationId, Long siteId, String reservationName, LocalDate resStartDate, LocalDate resEndDate, LocalDate resCreate);
+	public List<Reservation> addReservation(Long reservationId, Long siteId, String reservationName, LocalDate resStartDate, LocalDate resEndDate, LocalDate resCreate);
 	
 	public void removeReservation(Long reservationId, Long siteId, String reservationName, LocalDate resStartDate, LocalDate resEndDate, LocalDate resCreate);
 
-	public Reservation getReservationBySiteNumber(int siteNumber);
+	public List<Reservation> getReservationBySiteNumber(int siteNumber);
 	
-	public Reservation getReservationByResId(Long reservationId);
+	public List<Reservation> getReservationByResId(Long reservationId);
 	
-	public Reservation getReservationByResName(String reservationName);
+	public List<Reservation> getReservationByResName(String reservationName);
 }

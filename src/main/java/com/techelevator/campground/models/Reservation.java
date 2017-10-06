@@ -9,6 +9,7 @@ public class Reservation {
 	private LocalDate resStartDate;
 	private LocalDate resEndDate;
 	private LocalDate createDate;
+	
 	public Long getReservationId() {
 		return reservationId;
 	}
