@@ -132,43 +132,25 @@ public class CampgroundCLI {
 								newLine2 = input.nextLine();
 								String resName = newLine2;
 								Reservation resMade = new Reservation();
-								resDao.addReservation(resMade.getReservationId(), selectedSite.getSiteId(), resName, arrivalDate, departureDate, LocalDate.now());
+								List<Reservation> newResList = resDao.addReservation(resMade.getReservationId(), selectedSite.getSiteId(), resName, arrivalDate, departureDate, LocalDate.now());
 								
-								System.out.println("The reservation has been made and the confirmation id is " + resMade.getReservationId());
+								System.out.println("The reservation has been made and the confirmation id is " + newResList.get(0).getReservationId());
+							} else {
+								System.out.println("There was an error in processing your request");;
 							}
-					
+					System.exit(0);
 			} else if(choice.equals(PARK_MENU_OPTION_SEARCH_FOR_RESERVATION)) {
 				for(int i = 0; i < campList.size(); i++) {
 					System.out.println("#" + campList.get(i).getCampgroundId() + " " + campList.get(i).getName() + " Opening Month: " + campList.get(i).getOpeningMonth() + " Closing Month: " + campList.get(i).getClosingMonth() + " Daily Fee: $" + campList.get(i).getDailyFee());
 				}			
 			}
-		
-					}}}
-		}
-	//		handleCamp(choice);
-
-
-/*
-	private void handleCamp(String something) {
-		while(true) {	
-			printHeading("Select a Command");
-			Site choice = (Site)menu.getChoiceFromOptions(PARK_MENU_OPTIONS);
-			if(choice.equals(PARK_MENU_OPTION_SHOW_CAMPGROUNDS)) {
-				List<Site> siteList = siteDao.getSiteByCampground(selectedCampground.getCampgroundId());
+					}
+			} else {
+				System.exit(0);
 			}
-			
-			handleSite(choice);
 		}
 	}
-	
-	private void handleSite (Site selectedSite) {
-		while(true) {
-			printHeading("Your Camp Site Number is " + selectedSite);
-			List<Reservation> reservationList = resDao.getReservationBySiteNumber(selectedSite.getSiteNumber());
-			Reservation choice = (Reservation)menu.getChoiceFromOptions(reservationList.toArray());
-		}
-	}
-		*/
+
 		private void printHeading(String headingText) {
 			System.out.println("\n"+headingText);
 			for(int i = 0; i < headingText.length(); i++) {

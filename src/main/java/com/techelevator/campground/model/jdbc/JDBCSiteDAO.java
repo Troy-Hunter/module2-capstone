@@ -125,6 +125,20 @@ public class JDBCSiteDAO implements SiteDAO {
 		return siteList;	
 	}
 	
+	public Site createSite (Long siteId, Long campgroundId, int siteNumber, int maxOccupancy, boolean accessibility, int maxRv, boolean utilities) {
+		Site theSite = new Site();
+		theSite.getSiteId();
+		theSite.getCampgroundId();
+		theSite.getSiteNumber();
+		theSite.getMaxOccupancy();
+		theSite.setAccessible(accessibility);
+		theSite.getMaxRvLength();
+		theSite.setUtilities(utilities);
+		String sqlCreateSite = "INSERT INTO site (campground_id, site_number, max_occupancy, accessible, max_rv_length, utilities) VALUES (?, ?, ?, ?, ?, ?) RETURNING site_id";
+		theSite.setSiteId(jdbcTemplate.queryForObject(sqlCreateSite, Long.class, campgroundId, siteNumber, maxOccupancy, accessibility, maxRv, utilities));
+		return theSite;	
+	}
+	
 	private Site mapRowToSite (SqlRowSet results) {
 		Site theSite;
 		theSite = new Site();
